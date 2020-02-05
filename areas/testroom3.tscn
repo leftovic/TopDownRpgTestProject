@@ -10,33 +10,13 @@
 [ext_resource path="res://enemies/greenmonster.tscn" type="PackedScene" id=8]
 [ext_resource path="res://tiles/dirt1.png" type="Texture" id=9]
 
-[sub_resource type="GDScript" id=2]
-script/source = "extends Node2D
+[sub_resource type="GDScript" id=1]
 
-
-onready var animation_player = $anim
-onready var Black = $Control/Black
-
-#func _init():
-#	$doorway.connect(\"doorway_enter\", self, \"change_scene\")
-
-func change_scene(path, delay = 3):
-	yield(get_tree().create_timer(delay), \"timeout\")
-	animation_player.play(\"fade\")
-	yield(animation_player, \"animation_finished\")
-	get_tree().change_scene(\"res://areas/testroom4.tscn\") 
-	animation_player.play_backwards(\"fade\")
-	yield(animation_player, \"animation_finished\")
-
-
-
-"
-
-[sub_resource type="RectangleShape2D" id=1]
+[sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 12, 12 )
 
 [node name="Node" type="Node2D"]
-script = SubResource( 2 )
+script = SubResource( 1 )
 
 [node name="grasswalls" type="TileMap" parent="."]
 position = Vector2( -1, 0 )
@@ -82,7 +62,7 @@ position = Vector2( 152.111, 47.1758 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2( 74.3386, 58.4898 )
-shape = SubResource( 1 )
+shape = SubResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="Area2D"]
 position = Vector2( 74.716, 58.1124 )

@@ -12,11 +12,11 @@ func _init():
 
 
 func _ready():
-	$anim.play("default")
+	$anim.play("enemywalk")
 	movedir = dir.rand()
 
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	movement_loop()
 	spritedir_loop()
 	damage_loop()

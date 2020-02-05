@@ -232,4 +232,3 @@ editor_draw_drag_margin = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox"]
 shape = SubResource( 14 )
-[connection signal="doorway_enter" from="." to="." method="_on_player_doorway_enter"]
