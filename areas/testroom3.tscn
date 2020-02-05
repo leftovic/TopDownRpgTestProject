@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://grasspath.tres" type="TileSet" id=1]
 [ext_resource path="res://grasspathtileset.tres" type="TileSet" id=2]
@@ -8,9 +8,35 @@
 [ext_resource path="res://music/01town3.wav" type="AudioStream" id=6]
 [ext_resource path="res://enemies/greensnail.tscn" type="PackedScene" id=7]
 [ext_resource path="res://enemies/greenmonster.tscn" type="PackedScene" id=8]
-[ext_resource path="res://doorway.tres" type="TileSet" id=9]
+[ext_resource path="res://tiles/dirt1.png" type="Texture" id=9]
 
-[node name="Node" type="Node"]
+[sub_resource type="GDScript" id=2]
+script/source = "extends Node2D
+
+
+onready var animation_player = $anim
+onready var Black = $Control/Black
+
+#func _init():
+#	$doorway.connect(\"doorway_enter\", self, \"change_scene\")
+
+func change_scene(path, delay = 3):
+	yield(get_tree().create_timer(delay), \"timeout\")
+	animation_player.play(\"fade\")
+	yield(animation_player, \"animation_finished\")
+	get_tree().change_scene(\"res://areas/testroom4.tscn\") 
+	animation_player.play_backwards(\"fade\")
+	yield(animation_player, \"animation_finished\")
+
+
+
+"
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 12, 12 )
+
+[node name="Node" type="Node2D"]
+script = SubResource( 2 )
 
 [node name="grasswalls" type="TileMap" parent="."]
 position = Vector2( -1, 0 )
@@ -50,10 +76,16 @@ autoplay = true
 position = Vector2( 57.3086, 101.31 )
 
 [node name="greenmonster" parent="." instance=ExtResource( 8 )]
-position = Vector2( 149.847, 49.0626 )
+position = Vector2( 152.111, 47.1758 )
 
-[node name="TileMap" type="TileMap" parent="."]
-tile_set = ExtResource( 9 )
-cell_size = Vector2( 16, 16 )
-format = 1
-tile_data = PoolIntArray( 196613, 0, 0 )
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2( 74.3386, 58.4898 )
+shape = SubResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="Area2D"]
+position = Vector2( 74.716, 58.1124 )
+texture = ExtResource( 9 )
+[connection signal="scene_change" from="player" to="." method="_on_player_scene_change"]
+[connection signal="area_entered" from="Area2D" to="player" method="_on_Area2D_area_entered"]

@@ -1,10 +1,12 @@
 extends entity
 
-signal scene_changed()
-
 var state = "default"
 var velocity = Vector2()
 
+onready var animation_player = $anim
+onready var Black = $Control/Black
+
+signal scene_change
 
 func _physics_process(delta):
 	match state:
@@ -16,7 +18,14 @@ func _physics_process(delta):
 func _init():
 	TYPE = "PLAYER"
 	SPEED = 100
-	
+#	$doorway.connect("doorway_enter", self, "_on_Doorway_doorway_enter")
+
+
+#func _on_Doorway_doorway_enter(body):
+#	yield(get_tree().create_timer(delay), "timeout")
+#	animation_player.play("fade")
+#	yield(animation_player, "animation_finished")
+
 
 func get_input():
 	velocity = Vector2()
@@ -38,7 +47,7 @@ func _state_default():
 	get_input()
 	damage_loop()
 	movement_loop()
-	_on_button_pressed()
+	_on_button_pressed(Input)
 	velocity = move_and_slide(velocity)
 	if is_on_wall():
 		if spritedir == "left" and test_move(transform, Vector2(-1,0)):
@@ -58,16 +67,10 @@ func _state_default():
 		use_item(preload("res://items/weapons/swords/sword.tscn"))
 
 
-func _on_button_pressed():
+func _on_button_pressed(object):
 	if Input.is_action_pressed("b"):
-		_on_doorway_enter()
-
-func _on_doorway_enter():
-	for area in $hitbox.get_overlapping_areas():
-			get_tree().change_scene("res://areas/testroom4.tscn")
-			emit_signal("scene_changed")
-
-
+		if object.has_method("_on_doorway_enter"):
+			object._on_doorway_enter()
 
 
 func _state_swing():
@@ -76,3 +79,13 @@ func _state_swing():
 	damage_loop()
 	movedir = dir.center
 
+
+func _on_Area2D_area_entered(area, delay = 1):
+	print("_on_Node_doorway_enter")
+	yield(get_tree().create_timer(delay), "timeout")
+	animation_player.play("fade")
+	yield(animation_player, "animation_finished")
+	get_tree().change_scene("res://areas/testroom4.tscn") 
+	animation_player.play_backwards("fade")
+	yield(animation_player, "animation_finished")
+	emit_signal("scene_change")
